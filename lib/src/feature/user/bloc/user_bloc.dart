@@ -2,12 +2,12 @@ import 'dart:async';
 
 import 'package:bloc_concurrency/bloc_concurrency.dart' as bloc_concurrency;
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:paywall_demo/src/core/model/model.dart';
 import 'package:paywall_demo/src/feature/auth/data/repositories/auth_repository.dart';
 import 'package:paywall_demo/src/feature/user/data/repository/user_repository.dart';
 import 'package:paywall_demo/src/feature/user/model/user.dart';
 import 'package:paywall_demo/src/feature/user/model/user_exception.dart';
-import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'user_bloc.freezed.dart';
 part 'user_event.dart';

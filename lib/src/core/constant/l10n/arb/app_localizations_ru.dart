@@ -18,6 +18,20 @@ class AppLocalizationsRu extends AppLocalizations {
   String get emptyText => 'Здесь пока пусто';
 
   @override
+  String get onboardingTitle1 => 'Всё важное — в одном месте';
+
+  @override
+  String get onboardingText1 =>
+      'Собирайте задачи, заметки и прогресс в едином пространстве, чтобы ничего не терялось.';
+
+  @override
+  String get onboardingTitle2 => 'Полный доступ по подписке';
+
+  @override
+  String get onboardingText2 =>
+      'Откройте все возможности приложения и работайте без ограничений.';
+
+  @override
   String get darkThemeLabel => 'Темная тема';
 
   @override
@@ -64,6 +78,9 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get actionNext => 'Далее';
+
+  @override
+  String get actionContinue => 'Продолжить';
 
   @override
   String get authorizationLabel => 'Авторизация';

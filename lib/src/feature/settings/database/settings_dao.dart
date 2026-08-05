@@ -4,7 +4,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 abstract class ISettingsDao {
   PreferencesEntry<String> get themeMode;
   PreferencesEntry<int> get entryCount;
-  PreferencesEntry<bool> get isOnboardingPassed;
 }
 
 class SettingsDao extends TypedPreferencesDao implements ISettingsDao {
@@ -17,8 +16,4 @@ class SettingsDao extends TypedPreferencesDao implements ISettingsDao {
 
   @override
   PreferencesEntry<int> get entryCount => intEntry('entry_count');
-
-  @override
-  PreferencesEntry<bool> get isOnboardingPassed =>
-      boolEntry('is_onboarding_passed');
 }

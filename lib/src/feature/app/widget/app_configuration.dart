@@ -1,17 +1,34 @@
 import 'dart:ui' show lerpDouble;
 
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:paywall_demo/src/core/constant/constant.dart';
 import 'package:paywall_demo/src/core/extension/extension.dart';
 import 'package:paywall_demo/src/core/router/router.dart';
 import 'package:paywall_demo/src/core/theme/theme.dart';
+import 'package:paywall_demo/src/feature/onboarding/router/onboarding_guard.dart';
+import 'package:paywall_demo/src/feature/onboarding/scope/onboarding_scope.dart';
 
-class AppConfiguration extends StatelessWidget {
+class AppConfiguration extends StatefulWidget {
   const AppConfiguration({super.key});
+
+  @override
+  State<AppConfiguration> createState() => _AppConfigurationState();
+}
+
+class _AppConfigurationState extends State<AppConfiguration> {
+  /// Гарды ветки `/`, в порядке проверки.
+  ///
+  /// Создаются один раз: состояния, на которые они смотрят, живут выше
+  /// по дереву (см. `AppScope`) и не пересоздаются.
+  late final List<AutoRouteGuard> _rootGuards = [
+    OnboardingGuard(OnboardingScope.cubitOf(context)),
+  ];
 
   @override
   Widget build(BuildContext context) {
     return AppRouterBuilder(
+      rootGuards: _rootGuards,
       builder: (context, config) => MaterialApp.router(
         theme: AppTheme.lightTheme,
         darkTheme: AppTheme.lightTheme,

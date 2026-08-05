@@ -1,10 +1,10 @@
 import 'dart:async';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:paywall_demo/src/core/utils/utils.dart';
 import 'package:paywall_demo/src/feature/auth/data/repositories/auth_repository.dart';
 import 'package:paywall_demo/src/feature/user/model/user.dart';
-import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'auth_bloc.freezed.dart';
 part 'auth_event.dart';

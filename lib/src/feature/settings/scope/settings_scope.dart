@@ -47,19 +47,10 @@ class SettingsScope extends StatelessWidget {
     (state) => state.data.entryCount == 0,
   );
 
-  static ScopeData<bool> get isOnboardingPassedOf => _scope.select(
-    (state) => state.data.isOnboardingPassed,
-  );
-
   // --- Methods --- //
 
   static UnaryScopeMethod<AppThemeType> get setTheme => _scope.unary(
     (context, theme) => SettingsEvent.setTheme(themeType: theme),
-  );
-
-  static UnaryScopeMethod<bool> get setOnboardingPassed => _scope.unary(
-    (context, isPassed) =>
-        SettingsEvent.setOnboardingPassed(isPassed: isPassed),
   );
 
   static Future<void> openUpdateDialog(

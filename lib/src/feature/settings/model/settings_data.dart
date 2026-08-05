@@ -1,6 +1,6 @@
+import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:paywall_demo/src/feature/settings/enum/theme_type.dart';
 import 'package:paywall_demo/src/feature/settings/model/app_device_info.dart';
-import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:pub_semver/pub_semver.dart';
 
 part 'settings_data.freezed.dart';
@@ -9,7 +9,6 @@ part 'settings_data.freezed.dart';
 abstract class SettingsData with _$SettingsData {
   const factory SettingsData({
     required AppThemeType themeType,
-    required bool isOnboardingPassed,
     @Default(0) int entryCount,
     AppDeviceInfo? appInfo,
     AppConfig? config,

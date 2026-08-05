@@ -5,6 +5,11 @@
   "homeLabel": "Главная",
   "emptyText": "Здесь пока пусто",
 
+  "onboardingTitle1": "Всё важное — в одном месте",
+  "onboardingText1": "Собирайте задачи, заметки и прогресс в едином пространстве, чтобы ничего не терялось.",
+  "onboardingTitle2": "Полный доступ по подписке",
+  "onboardingText2": "Откройте все возможности приложения и работайте без ограничений.",
+
   "darkThemeLabel": "Темная тема",
   "lightThemeLabel": "Светлая тема",
   "systemThemeLabel": "Cистемная тема",
@@ -22,6 +27,7 @@
   "actionUpdate": "Обновить",
   "actionSkip": "Пропустить",
   "actionNext": "Далее",
+  "actionContinue": "Продолжить",
 
   "authorizationLabel": "Авторизация",
   "authorizationRequiredText": "Для просмотра необходимо авторизоваться",

@@ -1,8 +1,8 @@
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
-import 'package:paywall_demo/src/feature/settings/model/app_device_info.dart';
 import 'package:package_info_plus/package_info_plus.dart';
+import 'package:paywall_demo/src/feature/settings/model/app_device_info.dart';
 
 // Сервис для получения информации о приложении
 class DeviceAppInfoService {

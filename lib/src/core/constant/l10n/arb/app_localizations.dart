@@ -112,6 +112,30 @@ abstract class AppLocalizations {
   /// **'Здесь пока пусто'**
   String get emptyText;
 
+  /// No description provided for @onboardingTitle1.
+  ///
+  /// In ru, this message translates to:
+  /// **'Всё важное — в одном месте'**
+  String get onboardingTitle1;
+
+  /// No description provided for @onboardingText1.
+  ///
+  /// In ru, this message translates to:
+  /// **'Собирайте задачи, заметки и прогресс в едином пространстве, чтобы ничего не терялось.'**
+  String get onboardingText1;
+
+  /// No description provided for @onboardingTitle2.
+  ///
+  /// In ru, this message translates to:
+  /// **'Полный доступ по подписке'**
+  String get onboardingTitle2;
+
+  /// No description provided for @onboardingText2.
+  ///
+  /// In ru, this message translates to:
+  /// **'Откройте все возможности приложения и работайте без ограничений.'**
+  String get onboardingText2;
+
   /// No description provided for @darkThemeLabel.
   ///
   /// In ru, this message translates to:
@@ -207,6 +231,12 @@ abstract class AppLocalizations {
   /// In ru, this message translates to:
   /// **'Далее'**
   String get actionNext;
+
+  /// No description provided for @actionContinue.
+  ///
+  /// In ru, this message translates to:
+  /// **'Продолжить'**
+  String get actionContinue;
 
   /// No description provided for @authorizationLabel.
   ///

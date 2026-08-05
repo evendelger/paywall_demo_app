@@ -1,6 +1,6 @@
+import 'package:flutter_test/flutter_test.dart';
 import 'package:paywall_demo/src/core/constant/constant.dart';
 import 'package:paywall_demo/src/feature/home/view/home_screen.dart';
-import 'package:flutter_test/flutter_test.dart';
 
 import '../../../helpers/helpers.dart';
 

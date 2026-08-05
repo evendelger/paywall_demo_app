@@ -4,6 +4,8 @@ import 'package:paywall_demo/src/core/database/drift/app_database.dart';
 import 'package:paywall_demo/src/feature/auth/data/repositories/auth_repository.dart';
 import 'package:paywall_demo/src/feature/auth/data/repositories/token_storage.dart';
 import 'package:paywall_demo/src/feature/notification/data/notifications_repository.dart';
+import 'package:paywall_demo/src/feature/onboarding/data/repository/onboarding_repository.dart';
+import 'package:paywall_demo/src/feature/onboarding/database/onboarding_dao.dart';
 import 'package:paywall_demo/src/feature/settings/data/repository/settings_repository.dart';
 import 'package:paywall_demo/src/feature/settings/database/settings_dao.dart';
 import 'package:paywall_demo/src/feature/user/data/repository/user_repository.dart';
@@ -14,6 +16,7 @@ abstract class IRepositoryStorage {
   IAuthRepository get auth;
   IUserRepository get user;
   INotificationsRepository get notifications;
+  IOnboardingRepository get onboarding;
 }
 
 final class RepositoryStorage implements IRepositoryStorage {
@@ -55,5 +58,10 @@ final class RepositoryStorage implements IRepositoryStorage {
   @override
   late final INotificationsRepository notifications = NotificationsRepository(
     client: _client,
+  );
+
+  @override
+  late final IOnboardingRepository onboarding = OnboardingRepository(
+    onboardingDao: OnboardingDao(sharedPreferences: _sharedPreferences),
   );
 }

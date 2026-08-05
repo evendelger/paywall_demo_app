@@ -13,8 +13,6 @@ abstract interface class ISettingsRepository {
   Future<void> setTheme(AppThemeType value);
 
   Future<void> setEntry(int value);
-
-  Future<void> setOnboardingPassed({required bool isPassed});
 }
 
 final class SettingsRepository implements ISettingsRepository {
@@ -51,19 +49,12 @@ final class SettingsRepository implements ISettingsRepository {
   SettingsData get defaultData {
     final themeMode = _settingsDao.themeMode.value;
     final entryCount = _settingsDao.entryCount.value;
-    // В приложении онбординг появляется всегда перед авторизацией
-    // final isOnboardingPassed = _settingsDao.isOnboardingPassed.value;
 
     return SettingsData(
       themeType: themeMode == null
           ? AppThemeType.system
           : AppThemeType.values.byName(themeMode),
       entryCount: entryCount ?? 0,
-      isOnboardingPassed: true,
     );
   }
-
-  @override
-  Future<void> setOnboardingPassed({required bool isPassed}) =>
-      _settingsDao.isOnboardingPassed.setValue(isPassed);
 }

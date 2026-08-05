@@ -1,8 +1,8 @@
 import 'package:client_api/client_api.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:paywall_demo/src/core/extension/mappers/mappers.dart';
 import 'package:paywall_demo/src/core/model/model.dart';
-import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'paginated_data_bloc.freezed.dart';
 

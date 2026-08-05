@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:paywall_demo/src/core/extension/extension.dart';
 import 'package:intl/intl.dart';
+import 'package:paywall_demo/src/core/extension/extension.dart';
 
 extension DateTimeFormattingX on DateTime {
   /// dd.MM.yyyy
