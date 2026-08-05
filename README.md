@@ -1,143 +1,239 @@
-# Flutter Starter
+# Paywall Demo
 
 [![style: very good analysis][very_good_analysis_badge]][very_good_analysis_link]
 
-Шаблон Flutter-приложения: слоистая feature-архитектура, BLoC, DI через scope,
-Auto Route, Drift, Retrofit-клиент, тема и набор базовых виджетов.
-Из функционала — только главный экран; всё остальное готово к наращиванию.
+Тестовое задание: приложение с флоу **Онбординг → Paywall → Главный экран** и
+сохранением состояния подписки между запусками.
 
----
-
-## Новый проект из шаблона 🚀
-
-```sh
-make rename NAME=my_app BUNDLE_ID=com.company.myapp APP_NAME="My App" DOMAIN=myapp.com
+```
+первый запуск ──→ Онбординг (2 экрана) ──→ Paywall (Месяц / Год) ──→ Главный экран
+повторный запуск с активной подпиской ─────────────────────────────→ Главный экран
 ```
 
-Команда переименует Dart-пакет и все импорты, `Config.appName`, namespace
-SharedPreferences, Android `namespace`/`applicationId`/`MainActivity`,
-iOS bundle id и отображаемое имя, схему и домен deep links, после чего
-выполнит `pub get`, `gen-l10n` и `build_runner`.
-
-Дальше вручную:
-
-1. **Переписать `CLAUDE.md`** — в нём шаблонная рамка, которая мешает работе над реальным проектом
-2. `config/development.json` и `config/production.json` — `API_BASE_URL` и прочие ссылки
-3. Иконка приложения и splash (`assets/`), затем `make splash`
-4. Эндпоинты в `packages/client_api` под своё API
-5. Push-уведомления — если нужны (см. ниже)
-
-Полный порядок действий: [docs/NEW_PROJECT.md](docs/NEW_PROJECT.md).
+Бэкенда и реального биллинга нет: покупка эмулируется в репозитории (задержка
+~1.2 с + локальная запись), статус подписки живёт в `SharedPreferences`. Об этом
+честно написано и на самом пейволе — плашкой «покупка ненастоящая».
 
 ## Запуск
 
-Два флейвора: `development` и `production`.
+Flutter зафиксирован через FVM (`.fvmrc`, 3.44.1). Флейвор обязателен — без
+`--dart-define-from-file` приложение не соберётся.
 
 ```sh
-make run                       # development
+make run    # development
+
 flutter run --flavor development --dart-define-from-file=config/development.json
 flutter run --flavor production  --dart-define-from-file=config/production.json
 ```
 
-Версия Flutter зафиксирована через FVM (`.fvmrc`) — при несовпадении глобальной
-версии добавляйте префикс `fvm`.
-
-## Сборка
+Проверки:
 
 ```sh
-make build-android   # appbundle, production
-make build-ios       # ipa, production
+flutter analyze   # No issues found!
+flutter test      # 33 теста, зелёные
+make runner       # кодогенерация: freezed, auto_route, drift, ассеты
+flutter gen-l10n  # только локализация
 ```
 
-Shorebird:
+В development-сборке в правом верхнем углу каждого экрана есть кнопка «жучок» —
+панель отладки: сброс онбординга, выдача/сброс/протухание подписки. Она нужна,
+чтобы проходить флоу целиком без переустановки приложения.
 
-```sh
-make shorebird-android
-make shorebird-ios
+---
+
+## 1. Архитектура
+
+Проект вырос из внутреннего Flutter-шаблона, поэтому инфраструктура (DI, роутинг,
+базовые BLoC, тема, набор виджетов, логирование) заметно шире, чем одна фича
+подписки. Продуктового кода в шаблоне не было — фичи `onboarding` и
+`subscription` написаны под это задание.
+
+**Слои.** `lib/src/core` — инфраструктура, `lib/src/feature/<name>` — фичи.
+Зависимости направлены строго в одну сторону: фича может импортировать `core`,
+`core` про фичи не знает ничего. Между фичами разрешены только `model/`, `data/`
+и `scope/` — во внутренности чужих `view/` и `bloc/` никто не лезет.
+
+**Маршрутизация — на гардах Auto Route, и это ключевое решение.** Экраны не
+решают, куда идти дальше: они меняют состояние и просят роутер перепроверить
+гарды.
+
+```
+навигация в `/`
+   │
+   ├─ OnboardingGuard:   онбординг не пройден ──→ redirect /onboarding
+   ├─ SubscriptionGuard: подписки нет ──────────→ redirect /paywall
+   └─ оба пропустили ───────────────────────────→ MainShell → Home
+
+/onboarding ─«Продолжить»→ флаг сохранён → reevaluateGuards() → /paywall
+/paywall ────«Продолжить»→ покупка ──────→ reevaluateGuards() → Home
 ```
 
-## Кодогенерация
+Почему так, а не «посчитать стартовый маршрут в бутстрапе»:
 
-```sh
-make runner          # dart run build_runner build -d
-make watch-runner    # watch-режим
+- решение о доступе живёт в одном месте и работает не только на холодном старте:
+  истечение подписки, сброс состояния, будущий выход из аккаунта обрабатываются
+  тем же кодом;
+- ветка `/` защищена целиком, включая вложенные табы и диплинки вглубь
+  приложения;
+- нет промежуточного экрана-загрузчика и мигания главного экрана поверх сплэша.
+
+Из этого следуют два правила, которые легко нарушить:
+
+1. **Состояния, которые читают гарды, поднимаются синхронно.**
+   `OnboardingCubit` и `SubscriptionBloc` строят начальное состояние из
+   `SharedPreferences` прямо в конструкторе — первая проверка гарда происходит
+   раньше, чем успела бы отработать любая асинхронная загрузка. Оба scope стоят
+   **выше роутера** (`AppScope`).
+2. **`reevaluateGuards()` вызывается из `BlocListener` на новое состояние, а не
+   сразу после `add(event)`.** Запись в prefs и `emit` асинхронные: вызов сразу
+   после `add` перепроверил бы гард на старых данных.
+
+Экраны барьера (`/onboarding`, `/paywall`) — плоские роуты рядом с `/`, а не
+внутри него. Роут внутри `/` сначала проходит гарды этой ветки, поэтому пейвол
+под гардом подписки разворачивал бы сам себя. Плюс за барьером не должна
+строиться оболочка с табами.
+
+**Состояние — BLoC.** `SubscriptionBloc` держит статус и выбранный тариф на всех
+ветках состояния (`idle / processing / successful / error`), поэтому UI не мигает
+на переходах. Обработчик покупки — `droppable`: двойной тап не покупает дважды.
+
+**DI — ручные scope на `InheritedWidget`, без сервис-локатора:**
+
+```
+DependenciesScope → RepositoryScope → AppScope( Settings → Onboarding → Subscription → Auth )
 ```
 
-Запускать после изменения моделей (freezed/json), роутов (`@AutoRoute`),
-схемы БД (drift) и ассетов.
+Виджеты не знают типов блоков — они читают значения через `BlocScope`:
+`SubscriptionScope.isActiveOf(context, listen: true)`.
 
-## Что внутри
+**Данные.** `ISubscriptionRepository` намеренно имеет форму настоящего:
+`currentStatus` / `purchase(plan)` / `restore()` / `clear()` и типизированные
+ошибки `SubscriptionException`. Подменить эмуляцию на `in_app_purchase` или
+RevenueCat можно, не трогая ни блок, ни UI. Хранение — типизированные DAO поверх
+`SharedPreferences` (никаких `getString` по месту), ключи с namespace из `Config`.
+
+**Активность подписки не хранится флагом, а выводится из даты.**
+`SubscriptionStatus` хранит `expiresAt`, а `isActive` — это
+`expiresAt.isAfter(DateTime.now())`. Флаг `isActive` в хранилище рано или поздно
+разошёлся бы с реальностью; дата — не может. Побочный выигрыш: состояние
+«подписка истекла» получается само и проверяется из панели отладки.
+
+**Ни одного числа на пейволе не вписано руками.** Цена за месяц у годового
+тарифа, процент экономии и длительность триала считаются из полей
+`SubscriptionPlan`. Поменяли `price` в enum — экран пересчитался целиком.
+
+**Ошибки** — одна иерархия `AppException`; блок кладёт типизированное исключение
+в состояние, UI локализует его через `*_localize_x`-расширения и показывает
+через `context.showMessage`. Сырой `DioException` или `toString()` пользователю
+не показывается никогда. Все тексты — через `context.l10n` (ARB, локаль `ru`).
+Логирование — только через `mainTalker` (Talker), включая переходы состояний
+блоков: на скринкасте видно, что происходит.
+
+---
+
+## 2. Структура проекта
 
 ```
 lib/src/
-  core/          # api, bloc (DataBloc/PaginatedDataBloc), database, router,
-                 # theme, utils, widget, scope-обёртки для DI
+  core/                     # инфраструктура, о фичах не знает
+    api/                    #   Dio-клиент, интерцептор токена
+    bloc/                   #   базовые DataBloc / PaginatedDataBloc
+    constant/               #   Config (флейворы), UIConfig, l10n, сгенерированные ассеты
+    database/               #   Drift + типизированные DAO поверх SharedPreferences
+    extension/              #   BuildContext, Dio, String, num + локализация ошибок
+    model/                  #   исключения, Dependencies/Repository storages
+    router/                 #   AppRouter, обсервер, кастомные страницы переходов
+    theme/                  #   AppTheme, AppPalette, типографика
+    utils/                  #   логгер, PriceFormatter, модалки, url_launcher
+    widget/                 #   App*-виджеты и scope-обёртки (BlocScope/CubitScope)
+
   feature/
-    app/         # bootstrap, корневые роуты, оболочка с табами
-    auth/        # авторизация — необязательна, см. ниже
-    home/        # единственный экран
-    notification/# push-уведомления — код есть, но не инициализируется
-    settings/    # тема, версия приложения, конфиг
-    user/        # текущий пользователь
+    onboarding/             # ← написано под задание
+      cubit/                #   OnboardingCubit — состояние из prefs синхронно
+      data/ + database/     #   репозиторий + типизированный DAO (флаг «пройден»)
+      model/                #   данные страниц (иконка, заголовок, текст) — const
+      router/               #   /onboarding + OnboardingGuard
+      scope/ view/ widget/  #   DI-обёртка, экран с PageView, страница
+
+    subscription/           # ← написано под задание, здесь живёт paywall
+      model/                #   SubscriptionPlan (цены/период/триал + расчёты),
+                            #   SubscriptionStatus (expiresAt), SubscriptionException
+      database/             #   SubscriptionDao — plan, purchasedAt, expiresAt, isTrial
+      data/repository/      #   эмуляция покупки и восстановления
+      bloc/                 #   SubscriptionBloc (droppable purchase/restore)
+      router/               #   /paywall + SubscriptionGuard
+      scope/                #   statusOf / isActiveOf / selectedPlanOf / purchase / restore
+      view/ widget/         #   PaywallScreen, карточка тарифа, преимущества,
+                            #   легальные ссылки, listener с reevaluateGuards()
+      extension/            #   локализация тарифов и ошибок
+
+    app/                    # бутстрап, корневые роуты, оболочка с табами, панель отладки
+    home/                   # главный экран
+    settings/               # тема, конфиг, версия
+    auth/ user/             # авторизация необязательна: пользователь — гость
+    notification/           # push: код есть, не инициализируется (вне объёма)
+
+config/                     # development.json / production.json — флейворы
+packages/client_api/        # отдельный пакет: Retrofit-клиент и DTO (не на пути флоу)
+test/                       # 33 теста
+docs/                       # текст задания, чек-лист старта из шаблона
+PLAN.md                     # план реализации: что взято из шаблона, что дописано
+CLAUDE.md                   # правила проекта для AI-ассистента
 ```
 
-### Авторизация
+Что осталось от шаблона и **сознательно не участвует** во флоу: Drift, Retrofit,
+Firebase/push, авторизация. Всё это дремлет — пейвол не зависит от сети и от
+`API_BASE_URL`.
 
-По умолчанию **необязательна**: приложение стартует сразу на главном экране,
-неавторизованный пользователь — штатный «гость» (`UserScope.userOf` вернёт `null`).
+**Тесты** (`flutter test`, 33 шт.):
 
-Чтобы сделать вход обязательным:
+| Где | Что проверяет |
+|---|---|
+| `model/subscription_plan_test.dart` | цена за месяц и процент экономии считаются из цен, а не хардкодятся |
+| `data/subscription_repository_test.dart` | покупка пишется в prefs и переживает перезапуск; истёкшая подписка перестаёт быть активной сама |
+| `bloc/subscription_bloc_test.dart` | начальный статус поднимается синхронно; `processing → successful`; повторный тап по покупке отбрасывается |
+| `router/*_guard_test.dart` | цепочка гардов: без флага — онбординг, без подписки — пейвол, порядок гардов соблюдается |
+| `onboarding/*` | кубит, репозиторий, экран |
 
-1. Повесить `AuthGuard` на нужную ветку роутов — см. закомментированный пример
-   в `AppRoutes.root` (`lib/src/feature/app/router/app_routes.dart`)
-2. Раскомментировать редирект в `AppListeners`
-   (`lib/src/feature/app/widget/app_listeners.dart`)
-3. Реализовать вход в `AuthRepository` и форму в `LoginScreen`
+---
 
-### Push-уведомления
+## 3. Что улучшил бы при большем времени
 
-Код (`lib/src/feature/notification/`) и зависимости
-(`firebase_core`, `firebase_messaging`, `flutter_local_notifications`)
-оставлены в проекте, но **не инициализируются**. Чтобы включить:
+**Продукт и биллинг**
 
-1. `flutterfire configure` — появится `lib/firebase_options.dart`,
-   `google-services.json` и `GoogleService-Info.plist`
-2. Раскомментировать блок с `Firebase.initializeApp()` и
-   `NotificationService.setup()` в `MainRunner.run()`
-   (`lib/src/feature/app/logic/runner.dart`)
-3. Заменить `Firebase.initializeApp()` на вариант с `DefaultFirebaseOptions`
-   в `notification_service.dart` (отмечено `TODO(template)`)
+- Реальные покупки (`in_app_purchase` или RevenueCat) с серверной валидацией
+  чеков: интерфейс репозитория уже под это заточен, менять UI и блок не придётся.
+  Сейчас `restore()` честно читает локальные prefs — это эмуляция, а не
+  восстановление из стора.
+- Реакция на истечение подписки в рантайме. Сейчас `expiresAt` проверяется в
+  момент перепроверки гардов; напрашивается
+  `config(reevaluateListenable: ...)` — роутер сам перепроверит гарды на эмит
+  блока. Не сделал сразу: слушатель нужно создавать и диспозить вручную, а
+  дёргался бы он в том числе на промежуточном `processing`.
+- Конфигурация пейвола с сервера и A/B тарифов: сейчас цены и триал живут в enum.
+- Аналитика воронки: показ онбординга → показ пейвола → выбор тарифа → покупка →
+  восстановление. Без неё пейвол невозможно улучшать осмысленно.
 
-### Новая вкладка
+**Код**
 
-1. Создать фичу с `router/`, `view/` по образцу `feature/home`
-2. Добавить `...<Feature>Routes.tabRoutes` в `MainRoutes.routes`
-3. Добавить роут в `MainShell._tabs` и элемент в `AppBottomNavBar.items`
-   (панель появляется автоматически, когда вкладок больше одной)
-4. `make runner`
+- Главный экран сейчас — заглушка из шаблона. Довёл бы до плашки активной
+  подписки (тариф, признак триала, дата окончания) и списка контента.
+- Убрал бы из репозитория дремлющую инфраструктуру (Firebase, Drift,
+  Retrofit-клиент, авторизацию) либо довёл её до дела — сейчас она честно
+  описана как неиспользуемая, но объём кода на ревью раздувает.
+- Есть неприятная особенность auto_route 11: маршрут запоминает уже пройденные
+  гарды (`RouteMatch.evaluatedGuards`) и повторно их не спрашивает, поэтому сброс
+  состояния из панели отладки приходится доводить повторным заходом в `/`.
+  Перевёл бы это на `reevaluateListenable` и завёл issue в пакет.
 
-## Локализация 🌐
+**Тесты и качество**
 
-ARB-файлы: `lib/src/core/constant/l10n/arb/`, шаблон — `app_ru.arb` (единственная
-локаль `ru`). Добавили строку → `flutter gen-l10n` (или `make runner`).
-
-Использование:
-
-```dart
-final l10n = context.l10n;
-return Text(l10n.homeLabel);
-```
-
-Новая локаль: добавить `app_<locale>.arb` рядом с шаблоном и внести локаль
-в `CFBundleLocalizations` в `ios/Runner/Info.plist`.
-
-## Тесты
-
-```sh
-flutter test
-```
-
-`test/helpers/pump_app.dart` — хелпер рендеринга виджета с локализациями.
+- Интеграционный тест всего флоу, включая перезапуск приложения с активной
+  подпиской (сейчас это проверяется руками по чек-листу в `PLAN.md`).
+- Golden-тесты на пейвол — экран целиком построен на вычисляемых числах, регресс
+  вёрстки поймать больше нечем.
+- Тёмная тема (сейчас в `AppConfiguration` в `darkTheme` подставлена светлая) и
+  адаптивность пейвола под маленькие экраны.
 
 [very_good_analysis_badge]: https://img.shields.io/badge/style-very_good_analysis-B22C89.svg
 [very_good_analysis_link]: https://pub.dev/packages/very_good_analysis
