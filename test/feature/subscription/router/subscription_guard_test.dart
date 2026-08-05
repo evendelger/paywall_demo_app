@@ -18,19 +18,27 @@ void main() {
   group('SubscriptionGuard', () {
     testWidgets('разворачивает старт приложения на пейвол, '
         'пока подписки нет', (tester) async {
-      await _pumpApp(tester, isOnboardingPassed: true);
+      final app = await _pumpApp(tester, isOnboardingPassed: true);
 
       expect(find.byType(PaywallScreen), findsOneWidget);
+
+      await app.dispose();
     });
 
     testWidgets('не перебивает онбординг: гарды проверяются по порядку', (
       tester,
     ) async {
       // Подписка есть, но онбординг не пройден — первым решает OnboardingGuard
-      await _pumpApp(tester, isOnboardingPassed: false, status: _activeStatus);
+      final app = await _pumpApp(
+        tester,
+        isOnboardingPassed: false,
+        status: _activeStatus,
+      );
 
       expect(find.byType(OnboardingScreen), findsOneWidget);
       expect(find.byType(PaywallScreen), findsNothing);
+
+      await app.dispose();
     });
   });
 }
@@ -42,7 +50,36 @@ final SubscriptionStatus _activeStatus = SubscriptionStatus(
   expiresAt: DateTime.now().add(const Duration(days: 30)),
 );
 
-Future<void> _pumpApp(
+/// Поднятое в тесте приложение: состояния и роутер живут ровно столько,
+/// сколько идёт тест
+class _App {
+  const _App({
+    required this.onboardingCubit,
+    required this.subscriptionBloc,
+    required this.router,
+  });
+
+  final OnboardingCubit onboardingCubit;
+
+  final SubscriptionBloc subscriptionBloc;
+
+  final AppRouter router;
+
+  /// Закрывать блоки нужно **в теле теста**, а не в `addTearDown`.
+  ///
+  /// Колбэки teardown выполняются уже вне зоны `FakeAsync`, которой
+  /// `testWidgets` подменяет время: микротаска закрытия стрима туда попадает,
+  /// но прокрутить её больше некому — `close()` не завершается никогда, а
+  /// таймаут самого теста к этому моменту тоже снят.
+  Future<void> dispose() async {
+    await onboardingCubit.close();
+    await subscriptionBloc.close();
+
+    router.dispose();
+  }
+}
+
+Future<_App> _pumpApp(
   WidgetTester tester, {
   required bool isOnboardingPassed,
   SubscriptionStatus status = SubscriptionStatus.inactive,
@@ -54,17 +91,12 @@ Future<void> _pumpApp(
     subscriptionRepository: FakeSubscriptionRepository(status: status),
   );
 
-  addTearDown(onboardingCubit.close);
-  addTearDown(subscriptionBloc.close);
-
   final router = AppRouter(
     rootGuards: [
       OnboardingGuard(onboardingCubit),
       SubscriptionGuard(subscriptionBloc),
     ],
   );
-
-  addTearDown(router.dispose);
 
   await tester.pumpWidget(
     // Состояния выше роутера: гарды смотрят на них до построения экранов
@@ -81,4 +113,10 @@ Future<void> _pumpApp(
     ),
   );
   await tester.pumpAndSettle();
+
+  return _App(
+    onboardingCubit: onboardingCubit,
+    subscriptionBloc: subscriptionBloc,
+    router: router,
+  );
 }
