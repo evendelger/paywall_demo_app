@@ -1,0 +1,8 @@
+{
+  "ENVIRONMENT": "development",
+  "API_BASE_URL": "https://dev.example.com/api/",
+  "SITE_URL": "https://example.com",
+  "SUPPORT_URL": "",
+  "APP_STORE_URL": "",
+  "PLAY_STORE_URL": ""
+}

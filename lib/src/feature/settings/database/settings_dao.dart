@@ -1,0 +1,24 @@
+import 'package:paywall_demo/src/core/database/shared_preferences/typed_preferences_dao.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+abstract class ISettingsDao {
+  PreferencesEntry<String> get themeMode;
+  PreferencesEntry<int> get entryCount;
+  PreferencesEntry<bool> get isOnboardingPassed;
+}
+
+class SettingsDao extends TypedPreferencesDao implements ISettingsDao {
+  SettingsDao({
+    required SharedPreferences sharedPreferences,
+  }) : super(sharedPreferences, name: 'settings');
+
+  @override
+  PreferencesEntry<String> get themeMode => stringEntry('theme_mode');
+
+  @override
+  PreferencesEntry<int> get entryCount => intEntry('entry_count');
+
+  @override
+  PreferencesEntry<bool> get isOnboardingPassed =>
+      boolEntry('is_onboarding_passed');
+}

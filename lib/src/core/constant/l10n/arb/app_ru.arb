@@ -1,0 +1,65 @@
+{
+  "@@locale": "ru",
+  "appName": "Paywall Demo",
+
+  "homeLabel": "Главная",
+  "emptyText": "Здесь пока пусто",
+
+  "darkThemeLabel": "Темная тема",
+  "lightThemeLabel": "Светлая тема",
+  "systemThemeLabel": "Cистемная тема",
+
+  "yesLabel": "Да",
+  "noLabel": "Нет",
+  "actionSend": "Отправить",
+  "actionDelete": "Удалить",
+  "actionSave": "Сохранить",
+  "actionCancel": "Отмена",
+  "actionConfirm": "Подтвердить",
+  "actionRetry": "Повторить",
+  "actionClearAll": "Очистить все",
+  "actionUpdateNow": "Обновить сейчас",
+  "actionUpdate": "Обновить",
+  "actionSkip": "Пропустить",
+  "actionNext": "Далее",
+
+  "authorizationLabel": "Авторизация",
+  "authorizationRequiredText": "Для просмотра необходимо авторизоваться",
+  "signUpLabel": "Регистрация",
+  "exitButtonLabel": "Выйти",
+  "nameLabel": "Имя",
+  "lastNameLabel": "Фамилия",
+  "patronymicNameLabel": "Отчество",
+  "phoneNumberLabel": "Номер телефона",
+  "emailLabel": "E-mail",
+  "passwordLabel": "Пароль",
+  "consentText": "Я принимаю условия <1>пользовательского соглашения</1>, <2>политики конфиденциальности</2> и <3>оферты</3>.",
+  "overSomeSecondsText": "через {seconds} сек",
+  "@overSomeSecondsText": {
+    "placeholders": {
+      "seconds": {
+        "type": "String"
+      }
+    }
+  },
+
+  "error": "Ошибка",
+  "errorUnknown": "Неизвестная ошибка, попробуйте позже",
+  "errorSomethingWrong": "Что-то пошло не так.\nПопробуйте позже.",
+  "errorGetData": "Произошла ошибка при получении данных",
+  "errorEmptyHeader": "Пусто",
+  "errorEmptyText": "Нет данных для отображения.",
+  "errorUserUpdate": "Не удалось обновить данные пользователя",
+  "errorUserGet": "Не удалось получить информацию о пользователе",
+  "errorAuthSignOut": "Не удалось выйти из аккаунта",
+  "errorAuthSendCode": "Не удалось отправить код",
+  "errorAuthVerifyCode": "Неверный код или ошибка проверки",
+
+  "updateDialogMandatoryTitle": "Требуется обновление!",
+  "updateDialogMandatorySubtitle": "Чтобы продолжить пользоваться приложением, необходимо установить новую версию. Обновление содержит важные улучшения безопасности и новые функции.",
+  "updateDialogMandatoryButton": "Обновить сейчас",
+  "updateDialogSimpleTitle": "Доступно новое обновление",
+  "updateDialogSimpleSubtitle": "Мы добавили удобные функции и улучшили стабильность работы. Обновите приложение, чтобы всё работало ещё быстрее и удобнее!",
+  "updateDialogSimpleButtonPrimary": "Обновить",
+  "updateDialogSimpleButtonSecondary": "Напомнить позже"
+}

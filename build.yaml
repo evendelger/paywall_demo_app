@@ -1,0 +1,22 @@
+targets:
+  $default:
+    builders:
+      freezed:freezed:
+        enabled: true
+        generate_for:
+          - lib/src/feature/**/model/**
+          - lib/src/core/model/models/**
+          - lib/src/feature/**/bloc/**
+          - lib/src/feature/**/cubit/**
+
+      json_serializable:
+        enabled: true
+        generate_for:
+          - lib/src/feature/**/model/**
+          - lib/src/core/model/models/**
+
+      drift_dev:
+        enabled: true
+        generate_for:
+          - lib/src/feature/**/database/**
+          - lib/src/core/database/drift/**
