@@ -8,6 +8,8 @@ import 'package:paywall_demo/src/core/router/router.dart';
 import 'package:paywall_demo/src/core/theme/theme.dart';
 import 'package:paywall_demo/src/feature/onboarding/router/onboarding_guard.dart';
 import 'package:paywall_demo/src/feature/onboarding/scope/onboarding_scope.dart';
+import 'package:paywall_demo/src/feature/subscription/router/subscription_guard.dart';
+import 'package:paywall_demo/src/feature/subscription/scope/subscription_scope.dart';
 
 class AppConfiguration extends StatefulWidget {
   const AppConfiguration({super.key});
@@ -23,6 +25,7 @@ class _AppConfigurationState extends State<AppConfiguration> {
   /// по дереву (см. `AppScope`) и не пересоздаются.
   late final List<AutoRouteGuard> _rootGuards = [
     OnboardingGuard(OnboardingScope.cubitOf(context)),
+    SubscriptionGuard(SubscriptionScope.blocOf(context)),
   ];
 
   @override

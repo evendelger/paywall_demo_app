@@ -18,6 +18,12 @@ abstract base class Config {
   /// Site url.
   static const siteUrl = String.fromEnvironment('SITE_URL');
 
+  /// Ссылка на условия использования — нужна пейволу
+  static const termsUrl = String.fromEnvironment('TERMS_URL');
+
+  /// Ссылка на политику конфиденциальности — нужна пейволу
+  static const privacyUrl = String.fromEnvironment('PRIVACY_URL');
+
   /// Store url.
   static String storeUrl = Platform.isIOS
       ? const String.fromEnvironment('APP_STORE_URL')

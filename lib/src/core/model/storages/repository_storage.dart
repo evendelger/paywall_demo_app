@@ -8,6 +8,8 @@ import 'package:paywall_demo/src/feature/onboarding/data/repository/onboarding_r
 import 'package:paywall_demo/src/feature/onboarding/database/onboarding_dao.dart';
 import 'package:paywall_demo/src/feature/settings/data/repository/settings_repository.dart';
 import 'package:paywall_demo/src/feature/settings/database/settings_dao.dart';
+import 'package:paywall_demo/src/feature/subscription/data/repository/subscription_repository.dart';
+import 'package:paywall_demo/src/feature/subscription/database/subscription_dao.dart';
 import 'package:paywall_demo/src/feature/user/data/repository/user_repository.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -17,6 +19,7 @@ abstract class IRepositoryStorage {
   IUserRepository get user;
   INotificationsRepository get notifications;
   IOnboardingRepository get onboarding;
+  ISubscriptionRepository get subscription;
 }
 
 final class RepositoryStorage implements IRepositoryStorage {
@@ -63,5 +66,10 @@ final class RepositoryStorage implements IRepositoryStorage {
   @override
   late final IOnboardingRepository onboarding = OnboardingRepository(
     onboardingDao: OnboardingDao(sharedPreferences: _sharedPreferences),
+  );
+
+  @override
+  late final ISubscriptionRepository subscription = SubscriptionRepository(
+    subscriptionDao: SubscriptionDao(sharedPreferences: _sharedPreferences),
   );
 }

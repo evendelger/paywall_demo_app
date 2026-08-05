@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:paywall_demo/src/feature/auth/scope/auth_scope.dart';
 import 'package:paywall_demo/src/feature/onboarding/scope/onboarding_scope.dart';
 import 'package:paywall_demo/src/feature/settings/scope/settings_scope.dart';
+import 'package:paywall_demo/src/feature/subscription/scope/subscription_scope.dart';
 import 'package:paywall_demo/src/feature/user/model/user.dart';
 
 /// {@template app_scope}
@@ -21,9 +22,13 @@ class AppScope extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Онбординг и подписка — выше роутера: их состояния читают гарды
+    // ветки `/` ещё до построения первого экрана
     return SettingsScope(
       child: OnboardingScope(
-        child: AuthScope(initialUser: initialUser, child: child),
+        child: SubscriptionScope(
+          child: AuthScope(initialUser: initialUser, child: child),
+        ),
       ),
     );
   }

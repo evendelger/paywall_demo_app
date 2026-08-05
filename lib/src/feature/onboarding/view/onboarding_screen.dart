@@ -6,6 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:paywall_demo/src/core/constant/constant.dart';
 import 'package:paywall_demo/src/core/extension/extension.dart';
 import 'package:paywall_demo/src/core/widget/widget.dart';
+import 'package:paywall_demo/src/feature/app/widget/dev_tools_button.dart';
 import 'package:paywall_demo/src/feature/onboarding/cubit/onboarding_cubit.dart';
 import 'package:paywall_demo/src/feature/onboarding/model/onboarding_page_data.dart';
 import 'package:paywall_demo/src/feature/onboarding/scope/onboarding_scope.dart';
@@ -69,12 +70,18 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
 
     return BlocListener<OnboardingCubit, OnboardingState>(
       listenWhen: (previous, current) => !previous.isPassed && current.isPassed,
-      // Флаг сохранён — пересчитываем гарды, дальше решают они
-      listener: (context, state) => unawaited(context.router.reevaluateGuards()),
+      // Флаг сохранён — пересчитываем гарды ветки `/`, дальше решают они
+      listener: (context, state) => unawaited(
+        context.router.root.reevaluateGuards(),
+      ),
       child: Scaffold(
         body: SafeArea(
           child: Column(
             children: [
+              const Align(
+                alignment: Alignment.centerRight,
+                child: DevToolsButton(),
+              ),
               Expanded(
                 child: PageView.builder(
                   controller: _pageController,

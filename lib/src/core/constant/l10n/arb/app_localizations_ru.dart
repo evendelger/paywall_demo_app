@@ -32,6 +32,89 @@ class AppLocalizationsRu extends AppLocalizations {
       'Откройте все возможности приложения и работайте без ограничений.';
 
   @override
+  String get paywallTitle => 'Полный доступ';
+
+  @override
+  String get paywallSubtitle =>
+      'Оформите подписку и пользуйтесь приложением без ограничений';
+
+  @override
+  String get paywallBenefit1 => 'Все функции без ограничений';
+
+  @override
+  String get paywallBenefit2 => 'Синхронизация между устройствами';
+
+  @override
+  String get paywallBenefit3 => 'Никакой рекламы';
+
+  @override
+  String get paywallDemoNotice => 'Покупка эмулируется: списаний не будет';
+
+  @override
+  String get planMonthlyLabel => 'Месяц';
+
+  @override
+  String get planYearlyLabel => 'Год';
+
+  @override
+  String planPricePerMonth(String price) {
+    return '$price / мес';
+  }
+
+  @override
+  String planPricePerYear(String price) {
+    return '$price / год';
+  }
+
+  @override
+  String planSavingsBadge(int percent) {
+    return 'Выгода $percent %';
+  }
+
+  @override
+  String planTrialBadge(int days) {
+    String _temp0 = intl.Intl.pluralLogic(
+      days,
+      locale: localeName,
+      other: '$days дня бесплатно',
+      many: '$days дней бесплатно',
+      few: '$days дня бесплатно',
+      one: '$days день бесплатно',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String paywallTrialDisclaimer(int days, String price) {
+    String _temp0 = intl.Intl.pluralLogic(
+      days,
+      locale: localeName,
+      other: 'Первые $days дня бесплатно, затем $price',
+      many: 'Первые $days дней бесплатно, затем $price',
+      few: 'Первые $days дня бесплатно, затем $price',
+      one: 'Первый $days день бесплатно, затем $price',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String paywallDisclaimer(String price) {
+    return 'Списание $price сразу после оформления. Отменить можно в любой момент.';
+  }
+
+  @override
+  String get actionStartFree => 'Начать бесплатно';
+
+  @override
+  String get actionRestorePurchases => 'Восстановить покупки';
+
+  @override
+  String get termsLabel => 'Условия использования';
+
+  @override
+  String get privacyLabel => 'Политика конфиденциальности';
+
+  @override
   String get darkThemeLabel => 'Темная тема';
 
   @override
@@ -154,6 +237,13 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get errorAuthVerifyCode => 'Неверный код или ошибка проверки';
+
+  @override
+  String get errorPurchaseFailed =>
+      'Не удалось оформить подписку. Попробуйте ещё раз';
+
+  @override
+  String get errorNothingToRestore => 'Покупки не найдены';
 
   @override
   String get updateDialogMandatoryTitle => 'Требуется обновление!';

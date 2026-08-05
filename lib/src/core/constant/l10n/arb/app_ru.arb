@@ -10,6 +10,71 @@
   "onboardingTitle2": "Полный доступ по подписке",
   "onboardingText2": "Откройте все возможности приложения и работайте без ограничений.",
 
+  "paywallTitle": "Полный доступ",
+  "paywallSubtitle": "Оформите подписку и пользуйтесь приложением без ограничений",
+  "paywallBenefit1": "Все функции без ограничений",
+  "paywallBenefit2": "Синхронизация между устройствами",
+  "paywallBenefit3": "Никакой рекламы",
+  "paywallDemoNotice": "Покупка эмулируется: списаний не будет",
+
+  "planMonthlyLabel": "Месяц",
+  "planYearlyLabel": "Год",
+  "planPricePerMonth": "{price} / мес",
+  "@planPricePerMonth": {
+    "placeholders": {
+      "price": {
+        "type": "String"
+      }
+    }
+  },
+  "planPricePerYear": "{price} / год",
+  "@planPricePerYear": {
+    "placeholders": {
+      "price": {
+        "type": "String"
+      }
+    }
+  },
+  "planSavingsBadge": "Выгода {percent} %",
+  "@planSavingsBadge": {
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "planTrialBadge": "{days, plural, one{{days} день бесплатно} few{{days} дня бесплатно} many{{days} дней бесплатно} other{{days} дня бесплатно}}",
+  "@planTrialBadge": {
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "paywallTrialDisclaimer": "{days, plural, one{Первый {days} день бесплатно, затем {price}} few{Первые {days} дня бесплатно, затем {price}} many{Первые {days} дней бесплатно, затем {price}} other{Первые {days} дня бесплатно, затем {price}}}",
+  "@paywallTrialDisclaimer": {
+    "placeholders": {
+      "days": {
+        "type": "int"
+      },
+      "price": {
+        "type": "String"
+      }
+    }
+  },
+  "paywallDisclaimer": "Списание {price} сразу после оформления. Отменить можно в любой момент.",
+  "@paywallDisclaimer": {
+    "placeholders": {
+      "price": {
+        "type": "String"
+      }
+    }
+  },
+  "actionStartFree": "Начать бесплатно",
+  "actionRestorePurchases": "Восстановить покупки",
+  "termsLabel": "Условия использования",
+  "privacyLabel": "Политика конфиденциальности",
+
   "darkThemeLabel": "Темная тема",
   "lightThemeLabel": "Светлая тема",
   "systemThemeLabel": "Cистемная тема",
@@ -60,6 +125,8 @@
   "errorAuthSignOut": "Не удалось выйти из аккаунта",
   "errorAuthSendCode": "Не удалось отправить код",
   "errorAuthVerifyCode": "Неверный код или ошибка проверки",
+  "errorPurchaseFailed": "Не удалось оформить подписку. Попробуйте ещё раз",
+  "errorNothingToRestore": "Покупки не найдены",
 
   "updateDialogMandatoryTitle": "Требуется обновление!",
   "updateDialogMandatorySubtitle": "Чтобы продолжить пользоваться приложением, необходимо установить новую версию. Обновление содержит важные улучшения безопасности и новые функции.",

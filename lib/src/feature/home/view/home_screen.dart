@@ -2,6 +2,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:paywall_demo/src/core/constant/constant.dart';
 import 'package:paywall_demo/src/core/extension/extension.dart';
+import 'package:paywall_demo/src/feature/app/widget/dev_tools_button.dart';
 
 /// {@template home_screen}
 /// Домашний экран
@@ -16,7 +17,10 @@ class HomeScreen extends StatelessWidget {
     final l10n = context.l10n;
 
     return Scaffold(
-      appBar: AppBar(title: Text(l10n.homeLabel)),
+      appBar: AppBar(
+        title: Text(l10n.homeLabel),
+        actions: const [DevToolsButton()],
+      ),
       body: Center(
         child: Padding(
           padding: const EdgeInsets.all(UIConfig.kSidePadding),

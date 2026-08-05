@@ -136,6 +136,114 @@ abstract class AppLocalizations {
   /// **'Откройте все возможности приложения и работайте без ограничений.'**
   String get onboardingText2;
 
+  /// No description provided for @paywallTitle.
+  ///
+  /// In ru, this message translates to:
+  /// **'Полный доступ'**
+  String get paywallTitle;
+
+  /// No description provided for @paywallSubtitle.
+  ///
+  /// In ru, this message translates to:
+  /// **'Оформите подписку и пользуйтесь приложением без ограничений'**
+  String get paywallSubtitle;
+
+  /// No description provided for @paywallBenefit1.
+  ///
+  /// In ru, this message translates to:
+  /// **'Все функции без ограничений'**
+  String get paywallBenefit1;
+
+  /// No description provided for @paywallBenefit2.
+  ///
+  /// In ru, this message translates to:
+  /// **'Синхронизация между устройствами'**
+  String get paywallBenefit2;
+
+  /// No description provided for @paywallBenefit3.
+  ///
+  /// In ru, this message translates to:
+  /// **'Никакой рекламы'**
+  String get paywallBenefit3;
+
+  /// No description provided for @paywallDemoNotice.
+  ///
+  /// In ru, this message translates to:
+  /// **'Покупка эмулируется: списаний не будет'**
+  String get paywallDemoNotice;
+
+  /// No description provided for @planMonthlyLabel.
+  ///
+  /// In ru, this message translates to:
+  /// **'Месяц'**
+  String get planMonthlyLabel;
+
+  /// No description provided for @planYearlyLabel.
+  ///
+  /// In ru, this message translates to:
+  /// **'Год'**
+  String get planYearlyLabel;
+
+  /// No description provided for @planPricePerMonth.
+  ///
+  /// In ru, this message translates to:
+  /// **'{price} / мес'**
+  String planPricePerMonth(String price);
+
+  /// No description provided for @planPricePerYear.
+  ///
+  /// In ru, this message translates to:
+  /// **'{price} / год'**
+  String planPricePerYear(String price);
+
+  /// No description provided for @planSavingsBadge.
+  ///
+  /// In ru, this message translates to:
+  /// **'Выгода {percent} %'**
+  String planSavingsBadge(int percent);
+
+  /// No description provided for @planTrialBadge.
+  ///
+  /// In ru, this message translates to:
+  /// **'{days, plural, one{{days} день бесплатно} few{{days} дня бесплатно} many{{days} дней бесплатно} other{{days} дня бесплатно}}'**
+  String planTrialBadge(int days);
+
+  /// No description provided for @paywallTrialDisclaimer.
+  ///
+  /// In ru, this message translates to:
+  /// **'{days, plural, one{Первый {days} день бесплатно, затем {price}} few{Первые {days} дня бесплатно, затем {price}} many{Первые {days} дней бесплатно, затем {price}} other{Первые {days} дня бесплатно, затем {price}}}'**
+  String paywallTrialDisclaimer(int days, String price);
+
+  /// No description provided for @paywallDisclaimer.
+  ///
+  /// In ru, this message translates to:
+  /// **'Списание {price} сразу после оформления. Отменить можно в любой момент.'**
+  String paywallDisclaimer(String price);
+
+  /// No description provided for @actionStartFree.
+  ///
+  /// In ru, this message translates to:
+  /// **'Начать бесплатно'**
+  String get actionStartFree;
+
+  /// No description provided for @actionRestorePurchases.
+  ///
+  /// In ru, this message translates to:
+  /// **'Восстановить покупки'**
+  String get actionRestorePurchases;
+
+  /// No description provided for @termsLabel.
+  ///
+  /// In ru, this message translates to:
+  /// **'Условия использования'**
+  String get termsLabel;
+
+  /// No description provided for @privacyLabel.
+  ///
+  /// In ru, this message translates to:
+  /// **'Политика конфиденциальности'**
+  String get privacyLabel;
+
   /// No description provided for @darkThemeLabel.
   ///
   /// In ru, this message translates to:
@@ -375,6 +483,18 @@ abstract class AppLocalizations {
   /// In ru, this message translates to:
   /// **'Неверный код или ошибка проверки'**
   String get errorAuthVerifyCode;
+
+  /// No description provided for @errorPurchaseFailed.
+  ///
+  /// In ru, this message translates to:
+  /// **'Не удалось оформить подписку. Попробуйте ещё раз'**
+  String get errorPurchaseFailed;
+
+  /// No description provided for @errorNothingToRestore.
+  ///
+  /// In ru, this message translates to:
+  /// **'Покупки не найдены'**
+  String get errorNothingToRestore;
 
   /// No description provided for @updateDialogMandatoryTitle.
   ///

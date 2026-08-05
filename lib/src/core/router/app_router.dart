@@ -3,6 +3,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:paywall_demo/src/feature/app/router/app_routes.dart';
 import 'package:paywall_demo/src/feature/auth/router/auth_routes.dart';
 import 'package:paywall_demo/src/feature/onboarding/router/onboarding_routes.dart';
+import 'package:paywall_demo/src/feature/subscription/router/subscription_routes.dart';
 
 @AutoRouterConfig(
   replaceInRouteName: 'Screen|Page|Shell|Sheet,Route',
@@ -13,8 +14,8 @@ class AppRouter extends RootStackRouter {
   /// Гарды ветки `/`. Собираются в `AppConfiguration`: там доступны
   /// состояния, на которые они опираются.
   ///
-  /// Плоские роуты (`/auth/login`, `/onboarding`) гардами не закрыты —
-  /// иначе редирект зациклится.
+  /// Плоские роуты (`/auth/login`, `/onboarding`, `/paywall`) гардами
+  /// не закрыты — иначе редирект зациклится.
   final List<AutoRouteGuard> rootGuards;
 
   @override
@@ -24,6 +25,7 @@ class AppRouter extends RootStackRouter {
   List<AutoRoute> get routes => [
     ...AuthRoutes.routes,
     ...OnboardingRoutes.routes,
+    ...SubscriptionRoutes.routes,
 
     AppRoutes(guards: rootGuards).root,
   ];

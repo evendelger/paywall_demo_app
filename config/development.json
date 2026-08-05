@@ -4,5 +4,7 @@
   "SITE_URL": "https://example.com",
   "SUPPORT_URL": "",
   "APP_STORE_URL": "",
-  "PLAY_STORE_URL": ""
+  "PLAY_STORE_URL": "",
+  "TERMS_URL": "https://example.com/terms",
+  "PRIVACY_URL": "https://example.com/privacy"
 }
