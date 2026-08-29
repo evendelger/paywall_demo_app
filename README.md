@@ -2,7 +2,7 @@
 
 [![style: very good analysis][very_good_analysis_badge]][very_good_analysis_link]
 
-Тестовое задание: приложение с флоу **Онбординг → Paywall → Главный экран** и
+Приложение с флоу **Онбординг → Paywall → Главный экран** и
 сохранением подписки между запусками.
 
 ```
