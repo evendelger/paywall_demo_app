@@ -372,8 +372,21 @@ base64 -i android/app/keystore.jks | pbcopy
 ## Шаг 3. iOS: проверка компиляции
 
 Подписать сборку без Apple Developer Program нельзя, но проверить, что `production`-флейвор
-компилируется (поды, deployment target 15.0, нативный код плагинов, Firebase-поды), — можно.
-Схемы `development` / `production` уже есть в `ios/Runner.xcodeproj/xcshareddata/xcschemes`.
+компилируется (SPM-зависимости, deployment target 15.0, нативный код плагинов, Firebase SDK), —
+можно. Схемы `development` / `production` уже есть в `ios/Runner.xcodeproj/xcshareddata/xcschemes`.
+
+Плагины подключаются через **Swift Package Manager**, CocoaPods в проекте нет (`Podfile` удалён,
+`pod deintegrate`). SPM включён на уровне проекта в `pubspec.yaml`:
+
+```yaml
+flutter:
+  config:
+    enable-swift-package-manager: true
+```
+
+Порядок поиска настройки во Flutter: переменная `FLUTTER_SWIFT_PACKAGE_MANAGER` → `pubspec.yaml`
+→ глобальный `flutter config`. Поэтому локальный `flutter config --no-enable-swift-package-manager`
+(частый остаток от старых проектов) больше не переводит проект обратно на CocoaPods.
 
 ```yaml
   build-ios:
@@ -387,14 +400,6 @@ base64 -i android/app/keystore.jks | pbcopy
       - uses: actions/checkout@v4
 
       - uses: ./.github/actions/setup-flutter
-
-      # ios/Podfile.lock в .gitignore — ключ кэша строим по pubspec.lock и Podfile.
-      - name: Cache CocoaPods
-        uses: actions/cache@v4
-        with:
-          path: ios/Pods
-          key: pods-${{ runner.os }}-${{ hashFiles('pubspec.lock', 'ios/Podfile') }}
-          restore-keys: pods-${{ runner.os }}-
 
       - name: Build
         run: |
@@ -416,9 +421,15 @@ base64 -i android/app/keystore.jks | pbcopy
   обычные фичевые PR остаются быстрыми.
 - **Приватный репозиторий:** вынесите джоб в `.github/workflows/ios.yaml` с триггерами
   `workflow_dispatch` + `pull_request: branches: [main]`.
-- Не коммитьте `Podfile.lock`, пока он в `.gitignore`: стабильность подов в CI держится на
-  `pubspec.lock`. Если начнутся конфликты версий подов — тогда стоит убрать его из `.gitignore`
-  и закоммитить.
+- Версии SPM-пакетов закреплены в двух `Package.resolved` (`Runner.xcodeproj/…` и
+  `Runner.xcworkspace/…`) — они коммитятся. Если после локальной сборки они изменились (например,
+  `firebase_core` в `pubspec.lock` обновился и требует новую версию Firebase SDK) — коммитьте
+  вместе с изменением `pubspec.lock`.
+- При первой SPM-сборке Flutter добавляет в схему pre-action «Run Prepare Flutter Framework
+  Script» — это изменение тоже коммитится.
+- Кэша зависимостей в джобе нет: SPM скачивает пакеты в DerivedData раннера. Если сборка
+  станет заметно дольше — кэшировать `~/Library/Developer/Xcode/DerivedData/**/SourcePackages`
+  с ключом по `hashFiles('ios/**/Package.resolved')`.
 
 ---
 
@@ -680,8 +691,14 @@ v2-подпись и пишет `Not a signed jar file` даже на корре
 **Тесты проходят локально, но падают в CI** — зависимость от порядка, времени или локали.
 Повторите с seed из лога: `flutter test --test-randomize-ordering-seed <seed>`.
 
-**iOS падает на `pod install`** — сбросьте кэш подов (поменяйте префикс ключа `pods-` в
-workflow) или локально `make clean` и проверьте, что сборка проходит.
+**`All plugins found for ios are Swift Packages, but your project still has CocoaPods
+integration`** — в проекте остались следы CocoaPods (`Podfile`, `#include` Pods в
+`ios/Flutter/*.xcconfig`, ссылка на `Pods.xcodeproj` в workspace). Это предупреждение, но
+означает, что сборка идёт смешанным путём. Лечится `pod deintegrate` + удаление этих следов.
+
+**Локальная сборка меняет `project.pbxproj` и удаляет `Package.resolved`** — у вас глобально
+выключен SPM, и Flutter переводит проект на CocoaPods. Проверьте, что в `pubspec.yaml` есть
+`flutter.config.enable-swift-package-manager: true`, и откатите изменения: `git restore ios/`.
 
 **Джоб «висит» на macOS** — очередь на macOS-раннеры в пиковые часы 5–10 минут, это нормально.
 
