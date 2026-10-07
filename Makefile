@@ -90,9 +90,7 @@ setup-android: generate-keystore generate-key-properties
 .PHONY: clean
 clean:
 	flutter clean
-	rm -rf ios/Pods ios/Podfile.lock pubspec.lock
 	flutter pub get
-	cd ios && pod install --repo-update && cd ..
 
 .PHONY: runner
 runner:
