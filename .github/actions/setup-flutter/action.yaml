@@ -1,0 +1,26 @@
+name: Setup Flutter
+description: Flutter из pubspec.yaml, зависимости и кодогенерация (client_api + приложение)
+
+runs:
+  using: composite
+  steps:
+    - uses: subosito/flutter-action@v2
+      with:
+        flutter-version-file: pubspec.yaml
+        channel: stable
+        cache: true
+
+    - name: Install dependencies
+      shell: bash
+      run: flutter pub get
+
+    - name: Generate code (client_api)
+      shell: bash
+      working-directory: packages/client_api
+      run: |
+        dart pub get
+        dart run build_runner build --delete-conflicting-outputs
+
+    - name: Generate code (app)
+      shell: bash
+      run: dart run build_runner build --delete-conflicting-outputs
