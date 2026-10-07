@@ -8,6 +8,7 @@ targets:
           - lib/src/core/model/models/**
           - lib/src/feature/**/bloc/**
           - lib/src/feature/**/cubit/**
+          - lib/src/core/bloc/**
 
       json_serializable:
         enabled: true
