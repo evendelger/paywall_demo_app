@@ -61,6 +61,12 @@ feature/*, fix/*, ci/*  ──PR──▶  develop  ──PR (релиз)──�
   закомментировать.
 - [x] **Секреты Android в `.gitignore`.** `android/.gitignore` уже исключает `key.properties`,
   `**/*.jks`, `**/*.keystore`.
+- [x] **Конфиги флейворов в git.** `config/development.json` и `config/production.json`
+  закоммичены: в них только заглушки `example.com`, а без файла `--dart-define-from-file`
+  падает (`Did not find the file passed to "--dart-define-from-file"`). Когда в конфиге
+  появятся реальные значения — переносить его в секрет GitHub (`gh secret set
+  CONFIG_JSON_PRODUCTION < config/production.json`), в git оставлять `config/example.json` со
+  всеми ключами, а в CI записывать файл отдельным шагом со сверкой ключей с шаблоном.
 - [x] **Строгий линтер.** `very_good_analysis` + override-лист в `analysis_options.yaml`,
   `flutter analyze --fatal-infos` локально чистый.
 - [ ] **Кодогенерация `core/bloc`.** В `build.yaml` в глобы `freezed` добавлен
