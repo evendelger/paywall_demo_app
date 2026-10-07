@@ -1,0 +1,78 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write   # нужно для создания GitHub Release
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0   # нужна история main для проверки ниже
+
+      - name: Ensure tag points to main
+        run: |
+          git merge-base --is-ancestor "$GITHUB_SHA" origin/main \
+            || { echo "::error::Тег $GITHUB_REF_NAME не на ветке main"; exit 1; }
+
+      - name: Extract version from tag
+        id: version
+        run: echo "version=${GITHUB_REF_NAME#v}" >> "$GITHUB_OUTPUT"
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+          cache: gradle
+
+      - uses: ./.github/actions/setup-flutter
+
+      - name: Configure signing
+        env:
+          KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
+          STORE_PASSWORD: ${{ secrets.STORE_PASSWORD }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+        run: |
+          echo "$KEYSTORE_BASE64" | base64 --decode > android/app/upload-keystore.jks
+          cat > android/key.properties <<EOF
+          storePassword=$STORE_PASSWORD
+          keyPassword=$KEY_PASSWORD
+          keyAlias=$KEY_ALIAS
+          storeFile=upload-keystore.jks
+          EOF
+
+      - name: Build APK and AAB
+        env:
+          BUILD_ARGS: >-
+            --release
+            --flavor production
+            --dart-define-from-file=config/production.json
+            --build-name=${{ steps.version.outputs.version }}
+            --build-number=${{ github.run_number }}
+            --obfuscate --split-debug-info=build/symbols
+        run: |
+          flutter build apk $BUILD_ARGS
+          flutter build appbundle $BUILD_ARGS
+
+      - name: Package debug symbols
+        run: cd build && zip -r symbols.zip symbols
+
+      - name: Create GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "$GITHUB_REF_NAME" \
+            --title "$GITHUB_REF_NAME" \
+            --generate-notes \
+            build/app/outputs/flutter-apk/app-production-release.apk \
+            build/app/outputs/bundle/productionRelease/app-production-release.aab \
+            build/symbols.zip
