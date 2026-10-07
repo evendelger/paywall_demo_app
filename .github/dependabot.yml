@@ -1,17 +1,59 @@
 version: 2
+
+# Обновления приходят раз в месяц и сгруппированными PR, а не по одному на пакет:
+# - codegen — генераторы и их аннотации (freezed + freezed_annotation и т.д.)
+#   обновляются только вместе, иначе версии генератора и аннотаций расходятся;
+# - minor-patch — всё совместимое по semver, обычно мёржится сразу;
+# - major — ломающие обновления, разбираются вручную.
 updates:
   - package-ecosystem: "pub"
     directory: "/"
     target-branch: "develop"
     schedule:
-      interval: "weekly"
+      interval: "monthly"
+    commit-message:
+      prefix: "chore(deps)"
+    groups:
+      codegen:
+        patterns:
+          - "build_runner"
+          - "freezed*"
+          - "json_*"
+          - "drift*"
+          - "auto_route*"
+          - "retrofit*"
+          - "flutter_gen*"
+      minor-patch:
+        update-types: ["minor", "patch"]
+      major:
+        update-types: ["major"]
+
   - package-ecosystem: "pub"
     directory: "/packages/client_api"
     target-branch: "develop"
     schedule:
-      interval: "weekly"
+      interval: "monthly"
+    commit-message:
+      prefix: "chore(deps)"
+    groups:
+      codegen:
+        patterns:
+          - "build_runner"
+          - "freezed*"
+          - "json_*"
+          - "retrofit*"
+      minor-patch:
+        update-types: ["minor", "patch"]
+      major:
+        update-types: ["major"]
+
   - package-ecosystem: "github-actions"
     directory: "/"
     target-branch: "develop"
     schedule:
       interval: "monthly"
+    commit-message:
+      prefix: "ci(deps)"
+    groups:
+      actions:
+        patterns: ["*"]
