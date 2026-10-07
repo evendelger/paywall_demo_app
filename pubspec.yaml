@@ -44,7 +44,7 @@ dependencies:
   firebase_messaging: ^16.3.0
   flutter_local_notifications: ^22.0.0
   rxdart: ^0.28.0
-  pinput: ^6.0.2
+  pinput: ^7.0.0
   pub_semver: ^2.2.0
   bloc_concurrency: ^0.3.0
   talker_flutter: ^5.1.17
