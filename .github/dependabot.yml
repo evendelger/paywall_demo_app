@@ -13,6 +13,15 @@ updates:
       interval: "monthly"
     commit-message:
       prefix: "chore(deps)"
+    # Требуют Dart >= 3.13, а Flutter 3.44.1 идёт с Dart 3.12. Убрать вместе с
+    # обновлением Flutter, тогда же переводить freezed на 4.x сразу в обоих пакетах.
+    ignore:
+      - dependency-name: "freezed"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "freezed_annotation"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "very_good_analysis"
+        update-types: ["version-update:semver-major"]
     groups:
       codegen:
         patterns:
@@ -35,6 +44,13 @@ updates:
       interval: "monthly"
     commit-message:
       prefix: "chore(deps)"
+    ignore:
+      - dependency-name: "freezed"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "freezed_annotation"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "very_good_analysis"
+        update-types: ["version-update:semver-major"]
     groups:
       codegen:
         patterns:
