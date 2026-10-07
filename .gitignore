@@ -29,7 +29,6 @@
 .pub-cache/
 .pub/
 /build/
-pubspec.lock
 # Web related
 lib/generated_plugin_registrant.dart
 
@@ -50,8 +49,6 @@ app.*.map.json
 
 coverage/
 
-ios/Podfile.lock
-
 # FVM Version Cache
 .fvm/
 .cxx
@@ -60,6 +57,3 @@ ios/Podfile.lock
 /android/app/debug
 /android/app/profile
 /android/app/release
-
-# Environment config files
-/config/production.json

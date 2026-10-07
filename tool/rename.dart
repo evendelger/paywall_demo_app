@@ -149,8 +149,9 @@ _Options? _parseArgs(List<String> args) {
     print('Имя пакета должно быть в snake_case: $name');
     return null;
   }
-  if (!RegExp(r'^[a-zA-Z][a-zA-Z0-9]*(\.[a-zA-Z][a-zA-Z0-9]*)+$')
-      .hasMatch(bundleId)) {
+  if (!RegExp(
+    r'^[a-zA-Z][a-zA-Z0-9]*(\.[a-zA-Z][a-zA-Z0-9]*)+$',
+  ).hasMatch(bundleId)) {
     print('Некорректный bundle id: $bundleId');
     return null;
   }
@@ -177,9 +178,10 @@ class _CurrentValues {
   factory _CurrentValues.read(Directory root) {
     final pubspec = File('pubspec.yaml').readAsStringSync();
     final packageName =
-        RegExp(r'^name:\s*(\S+)', multiLine: true)
-            .firstMatch(pubspec)
-            ?.group(1) ??
+        RegExp(
+          r'^name:\s*(\S+)',
+          multiLine: true,
+        ).firstMatch(pubspec)?.group(1) ??
         (throw StateError('Не удалось прочитать name из pubspec.yaml'));
 
     final gradle = File('android/app/build.gradle.kts').readAsStringSync();
@@ -196,9 +198,9 @@ class _CurrentValues {
       'android/app/src/main/AndroidManifest.xml',
     ).readAsStringSync();
     final scheme =
-        RegExp(r'android:scheme="(?!http)([^"]+)"')
-            .firstMatch(manifest)
-            ?.group(1) ??
+        RegExp(
+          r'android:scheme="(?!http)([^"]+)"',
+        ).firstMatch(manifest)?.group(1) ??
         'app';
     final domain =
         RegExp(r'android:host="([^"]+)"').firstMatch(manifest)?.group(1) ??

@@ -58,7 +58,9 @@ class SubscriptionBloc extends Bloc<SubscriptionEvent, SubscriptionState> {
   ) async {
     final plan = state.selectedPlan;
 
-    emit(SubscriptionState.processing(status: state.status, selectedPlan: plan));
+    emit(
+      SubscriptionState.processing(status: state.status, selectedPlan: plan),
+    );
 
     try {
       final status = await _subscriptionRepository.purchase(plan);
@@ -79,7 +81,9 @@ class SubscriptionBloc extends Bloc<SubscriptionEvent, SubscriptionState> {
   ) async {
     final plan = state.selectedPlan;
 
-    emit(SubscriptionState.processing(status: state.status, selectedPlan: plan));
+    emit(
+      SubscriptionState.processing(status: state.status, selectedPlan: plan),
+    );
 
     try {
       final status = await _subscriptionRepository.restore();
@@ -94,7 +98,11 @@ class SubscriptionBloc extends Bloc<SubscriptionEvent, SubscriptionState> {
     } on SubscriptionException catch (error) {
       emit(_errorState(plan: plan, exception: error));
     } on Object catch (error, stackTrace) {
-      mainTalker.handle(error, stackTrace, 'Восстановление завершилось ошибкой');
+      mainTalker.handle(
+        error,
+        stackTrace,
+        'Восстановление завершилось ошибкой',
+      );
 
       emit(_errorState(plan: plan));
     }
