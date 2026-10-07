@@ -157,7 +157,7 @@ jobs:
     timeout-minutes: 15
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - uses: ./.github/actions/setup-flutter
 
@@ -174,7 +174,7 @@ jobs:
 
       - name: Upload coverage
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: coverage
           path: coverage/lcov.info
@@ -312,9 +312,9 @@ base64 -i android/app/keystore.jks | pbcopy
     timeout-minutes: 25
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
-      - uses: actions/setup-java@v4
+      - uses: actions/setup-java@v6
         with:
           distribution: temurin
           java-version: '21'
@@ -345,13 +345,13 @@ base64 -i android/app/keystore.jks | pbcopy
             --build-number=${{ github.run_number }} \
             --obfuscate --split-debug-info=build/symbols
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v6
         with:
           name: app-development-apk
           path: build/app/outputs/flutter-apk/app-development-release.apk
           retention-days: 14
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v6
         with:
           name: android-debug-symbols-development
           path: build/symbols
@@ -397,7 +397,7 @@ flutter:
     timeout-minutes: 40
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - uses: ./.github/actions/setup-flutter
 
@@ -410,7 +410,7 @@ flutter:
       - name: Package .app
         run: cd build/ios/iphoneos && zip -r Runner.app.zip Runner.app
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v6
         with:
           name: ios-app-unsigned
           path: build/ios/iphoneos/Runner.app.zip
@@ -454,7 +454,7 @@ jobs:
     timeout-minutes: 30
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           fetch-depth: 0   # нужна история main для проверки ниже
 
@@ -467,7 +467,7 @@ jobs:
         id: version
         run: echo "version=${GITHUB_REF_NAME#v}" >> "$GITHUB_OUTPUT"
 
-      - uses: actions/setup-java@v4
+      - uses: actions/setup-java@v6
         with:
           distribution: temurin
           java-version: '21'
