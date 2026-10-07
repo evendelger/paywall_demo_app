@@ -601,30 +601,39 @@ workflow, поэтому защиту включайте **после** перв
 
 ### Dependabot
 
-`.github/dependabot.yml`:
+В этом проекте плановые PR Dependabot **отключены**: в каждом блоке
+`.github/dependabot.yml` стоит `open-pull-requests-limit: 0`. Обновления проверяем вручную и
+делаем отдельной веткой (`chore/deps-...`) в `develop`:
+
+```bash
+fvm flutter pub outdated
+(cd packages/client_api && fvm dart pub outdated)
+```
+
+Сокращённый вид блока (полный конфиг, с `ignore` и группами, лежит в репозитории):
 
 ```yaml
-version: 2
-updates:
   - package-ecosystem: "pub"
-    directory: "/"
-    target-branch: "develop"
-    schedule:
-      interval: "weekly"
-  - package-ecosystem: "pub"
-    directory: "/packages/client_api"
-    target-branch: "develop"
-    schedule:
-      interval: "weekly"
-  - package-ecosystem: "github-actions"
     directory: "/"
     target-branch: "develop"
     schedule:
       interval: "monthly"
+    open-pull-requests-limit: 0   # убрать, чтобы вернуть автоматические PR
+    commit-message:
+      prefix: "chore(deps)"
+    groups:
+      codegen:      { patterns: ["build_runner", "freezed*", "json_*", "drift*", ...] }
+      minor-patch:  { update-types: ["minor", "patch"] }
+      major:        { update-types: ["major"] }
 ```
 
-Без `target-branch` Dependabot шлёт PR в ветку по умолчанию — явное указание защищает от
-случайных PR прямо в `main`.
+- Лимит действует только на плановые обновления версий. Security-обновления
+  включаются и выключаются отдельно: Settings → Code security → Dependabot security updates.
+- Группы и `ignore` оставлены в конфиге. Если убрать лимит, PR будут приходить раз в месяц и
+  пачкой на группу, а не по одному на пакет. В `ignore` сейчас major-обновления `freezed`,
+  `freezed_annotation` и `very_good_analysis`: им нужен Dart ≥ 3.13.
+- Без `target-branch` Dependabot шлёт PR в ветку по умолчанию. Явное указание защищает от
+  случайных PR прямо в `main`.
 
 ---
 

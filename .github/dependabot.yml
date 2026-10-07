@@ -1,6 +1,13 @@
 version: 2
 
-# Обновления приходят раз в месяц и сгруппированными PR, а не по одному на пакет:
+# Плановые PR отключены: open-pull-requests-limit: 0. Обновления смотрим и делаем вручную:
+#   fvm flutter pub outdated
+#   (cd packages/client_api && fvm dart pub outdated)
+# Security-обновления от этого лимита не зависят — они управляются в
+# Settings → Code security → Dependabot security updates.
+#
+# Чтобы вернуть автоматические PR, достаточно убрать open-pull-requests-limit.
+# Тогда они будут приходить раз в месяц и сгруппированными, а не по одному на пакет:
 # - codegen — генераторы и их аннотации (freezed + freezed_annotation и т.д.)
 #   обновляются только вместе, иначе версии генератора и аннотаций расходятся;
 # - minor-patch — всё совместимое по semver, обычно мёржится сразу;
@@ -11,6 +18,7 @@ updates:
     target-branch: "develop"
     schedule:
       interval: "monthly"
+    open-pull-requests-limit: 0
     commit-message:
       prefix: "chore(deps)"
     # Требуют Dart >= 3.13, а Flutter 3.44.1 идёт с Dart 3.12. Убрать вместе с
@@ -42,6 +50,7 @@ updates:
     target-branch: "develop"
     schedule:
       interval: "monthly"
+    open-pull-requests-limit: 0
     commit-message:
       prefix: "chore(deps)"
     ignore:
@@ -68,6 +77,7 @@ updates:
     target-branch: "develop"
     schedule:
       interval: "monthly"
+    open-pull-requests-limit: 0
     commit-message:
       prefix: "ci(deps)"
     groups:
