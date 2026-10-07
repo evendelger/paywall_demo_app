@@ -147,7 +147,10 @@ class _PaywallFooter extends StatelessWidget {
     final l10n = context.l10n;
 
     final plan = SubscriptionScope.selectedPlanOf(context, listen: true);
-    final isProcessing = SubscriptionScope.isProcessingOf(context, listen: true);
+    final isProcessing = SubscriptionScope.isProcessingOf(
+      context,
+      listen: true,
+    );
 
     return Padding(
       padding: const EdgeInsets.fromLTRB(

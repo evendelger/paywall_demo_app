@@ -34,9 +34,7 @@ void main() {
 
       await dao.plan.setValue(SubscriptionPlan.yearly.name);
       await dao.expiresAt.setValue(
-        DateTime.now()
-            .subtract(const Duration(days: 1))
-            .millisecondsSinceEpoch,
+        DateTime.now().subtract(const Duration(days: 1)).millisecondsSinceEpoch,
       );
 
       final status = _createRepositoryOver(dao).currentStatus;
