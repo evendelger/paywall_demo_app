@@ -15,8 +15,7 @@ abstract class ApiResponse<T> with _$ApiResponse<T> {
   factory ApiResponse.fromJson(
     Map<String, Object?> json,
     T Function(Object?) fromJsonT,
-  ) =>
-      _$ApiResponseFromJson(json, fromJsonT);
+  ) => _$ApiResponseFromJson(json, fromJsonT);
 }
 
 @freezed

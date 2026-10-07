@@ -84,16 +84,18 @@ void main() {
       );
     });
 
-    test('восстановление показывает тариф, который действительно куплен',
-        () async {
-      final bloc = _createBloc(
-        repository: FakeSubscriptionRepository(status: _activeStatus),
-      )..add(const SubscriptionEvent.restore());
-      await pumpEventQueue();
+    test(
+      'восстановление показывает тариф, который действительно куплен',
+      () async {
+        final bloc = _createBloc(
+          repository: FakeSubscriptionRepository(status: _activeStatus),
+        )..add(const SubscriptionEvent.restore());
+        await pumpEventQueue();
 
-      expect(bloc.state.isActive, isTrue);
-      expect(bloc.state.selectedPlan, SubscriptionPlan.yearly);
-    });
+        expect(bloc.state.isActive, isTrue);
+        expect(bloc.state.selectedPlan, SubscriptionPlan.yearly);
+      },
+    );
 
     test('сброс возвращает состояние к отсутствию подписки', () async {
       final bloc = _createBloc(
