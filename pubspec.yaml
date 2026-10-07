@@ -83,6 +83,12 @@ flutter:
   uses-material-design: true
   generate: true
 
+  # iOS-плагины подключаются через Swift Package Manager. Включено на уровне
+  # проекта, чтобы локальный `flutter config --no-enable-swift-package-manager`
+  # не возвращал проект на CocoaPods.
+  config:
+    enable-swift-package-manager: true
+
   assets:
     - assets/images/
     - assets/icons/
