@@ -49,8 +49,6 @@ app.*.map.json
 
 coverage/
 
-ios/Podfile.lock
-
 # FVM Version Cache
 .fvm/
 .cxx
